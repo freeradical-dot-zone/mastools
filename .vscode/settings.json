@@ -2,7 +2,10 @@
     "files.exclude": {
         "**/__pycache__": true,
         "**/.mypy_cache": true,
-        ".venv": true,
-        "mastools.egg-info": true,
-    }
+        ".pytest_cache": true,
+        ".venv/": true,
+        "dist/": true,
+        "mastools.egg-info/": true,
+        "pip-wheel-metadata/": true,
+    },
 }
