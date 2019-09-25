@@ -1,0 +1,4 @@
+.mypy_cache/
+.venv/
+mastools.egg-info/
+*.pyc
