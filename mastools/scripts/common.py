@@ -47,4 +47,4 @@ def save_cache(cache_key, version, data):
 
     cache_data = {cache_key: data, "version": version}
 
-    cache_file(cache_key).write_text(json.dumps(cache_data))
+    cache_file(cache_key).write_text(json.dumps(cache_data, indent=2))
