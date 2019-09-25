@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 
+from psycopg2 import connect
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -13,8 +14,12 @@ Base = declarative_base()
 def session_for(*, host, database, user, password, port=5432):
     """Return a (possibly cached) session for the connection details."""
 
-    engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}")
-    engine.connect()
+    def pg_connect():
+        """Return a connection to the Mastodon database."""
+
+        return connect(host=host, database=database, user=user, password=password, port=port)
+
+    engine = create_engine(f"postgresql+psycopg2://", creator=pg_connect)
     Session = sessionmaker(bind=engine)
     session = Session()
     return session
