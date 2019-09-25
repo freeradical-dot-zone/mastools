@@ -10,14 +10,13 @@ spammers before they have a chance to post!
 """
 
 import argparse
-import json
 from operator import itemgetter
-from pathlib import Path
 
 from mastools.models import session_for, Accounts
+from mastools.scripts import common
 
-CACHE_FILE = "~/.mastools/usercache.json"
-CONFIG_FILE = "~/.mastools/config.json"
+CACHE_KEY = "user"
+CACHE_VERSION = 1
 
 
 def has_url(account: Accounts) -> bool:
@@ -151,19 +150,9 @@ def handle_command_line():
     parser = argparse.ArgumentParser(description=handle_command_line.__doc__)
     parser.parse_args()
 
-    cache_file = Path(CACHE_FILE).expanduser()
-    config_file = Path(CONFIG_FILE).expanduser()
+    session = session_for(**common.get_config())
 
-    config = json.loads(config_file.read_text())
-    session = session_for(**config)
-
-    # Try to get the results of the last run, but fall back to an empty dict if that's not
-    # available. That's most likely to happen on the first run.
-    try:
-        old_users = json.loads(cache_file.read_text())["users"]
-    except FileNotFoundError:
-        old_users = {}
-
+    old_users = common.load_cache(CACHE_KEY, CACHE_VERSION)
     new_users = users_with_urls(session)
 
     for username, new_data in new_users.items():
@@ -184,8 +173,4 @@ def handle_command_line():
     for username, old_data in old_users.items():
         show_output(render_deleted_user(username, old_data))
 
-    # Save these results for the next run. Include the version information and nest the user
-    # information inside a "users" key from the start, because experience says if we don't do this
-    # then the next release will add a feature that requires a change in the data layout, and then
-    # we'll have to write a data migration or something.
-    cache_file.write_text(json.dumps({"users": new_users, "version": 1}))
+    common.save_cache(CACHE_KEY, CACHE_VERSION, new_users)
