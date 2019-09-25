@@ -68,7 +68,7 @@ Deleted user: old_spammer
 
 # License
 
-Distributed under the terms of the `MIT`_ license, mastrools is free and open source software.
+Distributed under the terms of the MIT license, mastools is free and open source software.
 
 # History
 
