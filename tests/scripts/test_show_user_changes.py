@@ -49,6 +49,30 @@ Changed user: activeuser
     )
 
 
+def test_render_changed_user_but_not_really():
+    """Maaaaybe-changed users are displayed as expected."""
+
+    out = show_user_changes.render_changed_user(
+        "activeuser",
+        {"fields": [{"name": "likes", "value": "puppies, infosec"}], "note": "hack the planet"},
+        {"fields": [{"name": "likes", "value": "puppies, infosec"}], "note": "hack the planet"},
+    )
+
+    # We should never be here if neither fields nor note have changed, but let's ignore that for
+    # testing. Cut admins a break and tell them up front when a user's field or notes haven't
+    # changed.
+    assert (
+        collect(out)
+        == """\
+Changed user: activeuser
+ fields:
+  <unchanged>
+ note:
+  <unchanged>
+"""
+    )
+
+
 def test_render_deleted_user():
     """Deleted users are displayed as expected."""
 

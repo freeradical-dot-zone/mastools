@@ -75,8 +75,10 @@ def render_new_user(username, data):
     """Pretty-print information about a new user."""
 
     yield f"New user: {username}"
+
     yield " fields:"
     yield from render_fields("+", data["fields"])
+
     yield " note:"
     yield from render_note("+", data["note"])
 
@@ -85,20 +87,30 @@ def render_changed_user(username, old_data, new_data):
     """Pretty-print information about a changed user."""
 
     yield f"Changed user: {username}"
+
     yield " fields:"
-    yield from render_fields("-", old_data["fields"])
-    yield from render_fields("+", new_data["fields"])
+    if old_data["fields"] == new_data["fields"]:
+        yield "  <unchanged>"
+    else:
+        yield from render_fields("-", old_data["fields"])
+        yield from render_fields("+", new_data["fields"])
+
     yield " note:"
-    yield from render_note("-", old_data["note"])
-    yield from render_note("+", new_data["note"])
+    if old_data["note"] == new_data["note"]:
+        yield "  <unchanged>"
+    else:
+        yield from render_note("-", old_data["note"])
+        yield from render_note("+", new_data["note"])
 
 
 def render_deleted_user(username, data):
     """Pretty-print information about a deleted user."""
 
     yield f"Deleted user: {username}"
+
     yield " fields:"
     yield from render_fields("-", data["fields"])
+
     yield " note:"
     yield from render_note("-", data["note"])
 
