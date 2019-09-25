@@ -50,6 +50,16 @@ def users_with_urls(session):
 def render_field_changes(old_fields, new_fields):
     """Pretty-print changes in a user's bio fields."""
 
+    if not (old_fields or new_fields):
+        yield "  <none>"
+        return
+
+    if sorted(old_fields, key=itemgetter("name", "value")) == sorted(
+        new_fields, key=itemgetter("name", "value")
+    ):
+        yield "  <unchanged>"
+        return
+
     old_set = {(field["name"], field["value"]) for field in old_fields}
     new_set = {(field["name"], field["value"]) for field in new_fields}
 
@@ -63,17 +73,26 @@ def render_field_changes(old_fields, new_fields):
         yield f"  + {field[0]!r}: {field[1]!r}"
 
 
-def render_note(prefix, note):
-    """Pretty-print a user's bio note."""
+def render_note_changes(old_note, new_note):
+    """Pretty-print changes in a user's bio note."""
 
-    if not note:
-        yield f"  {prefix} <none>"
+    if not (old_note or new_note):
+        yield "  <none>"
         return
 
-    # This protects from email header injection from crafty users. See
+    if old_note == new_note:
+        yield "  <unchanged>"
+        return
+
+    # Returning the repr (`!r`) protects from email header injection by crafty users. See
     # https://www.thesitewizard.com/php/protect-script-from-email-injection.shtml for an
     # explanation.
-    yield f"  {prefix} {note!r}"
+
+    if old_note:
+        yield f"  - {old_note!r}"
+
+    if new_note:
+        yield f"  + {new_note!r}"
 
 
 def render_new_user(username, data):
@@ -85,7 +104,7 @@ def render_new_user(username, data):
     yield from render_field_changes({}, data["fields"])
 
     yield " note:"
-    yield from render_note("+", data["note"])
+    yield from render_note_changes("", data["note"])
 
 
 def render_changed_user(username, old_data, new_data):
@@ -94,17 +113,10 @@ def render_changed_user(username, old_data, new_data):
     yield f"Changed user: {username}"
 
     yield " fields:"
-    if old_data["fields"] == new_data["fields"]:
-        yield "  <unchanged>"
-    else:
-        yield from render_field_changes(old_data["fields"], new_data["fields"])
+    yield from render_field_changes(old_data["fields"], new_data["fields"])
 
     yield " note:"
-    if old_data["note"] == new_data["note"]:
-        yield "  <unchanged>"
-    else:
-        yield from render_note("-", old_data["note"])
-        yield from render_note("+", new_data["note"])
+    yield from render_note_changes(old_data["note"], new_data["note"])
 
 
 def render_deleted_user(username, data):
@@ -116,7 +128,7 @@ def render_deleted_user(username, data):
     yield from render_field_changes(data["fields"], {})
 
     yield " note:"
-    yield from render_note("-", data["note"])
+    yield from render_note_changes(data["note"], "")
 
 
 def show_output(gen):
