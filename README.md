@@ -50,4 +50,6 @@ Distributed under the terms of the `MIT`_ license, mastrools is free and open so
 
 # History
 
+- v0.1.2 - 2019-09-25: Prettier show-user-changes output
+- v0.1.1 - 2019-09-24: Same code, but pushing new metadata to pypi
 - v0.1.0 - 2019-09-24: First release
