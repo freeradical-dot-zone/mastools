@@ -9,6 +9,40 @@ def collect(gen):
     return "\n".join(list(gen)) + "\n"
 
 
+def test_render_field_changes():
+    """Assert old and new fields are formatted correctly."""
+
+    def make_item(name, value):
+        return {"name": name, "value": value}
+
+    old_fields = [
+        make_item("one", "A"),
+        make_item("two", "B"),
+        make_item("two", "C"),
+        make_item("three", "D"),
+    ]
+    new_fields = [
+        make_item("uno", "A"),
+        make_item("two", "B"),
+        make_item("three", "D"),
+        make_item("three", "E"),
+        make_item("four", "F"),
+    ]
+
+    assert (
+        collect(show_user_changes.render_field_changes(old_fields, new_fields))
+        == """\
+  - 'one': 'A'
+  - 'two': 'C'
+    'three': 'D'
+    'two': 'B'
+  + 'four': 'F'
+  + 'three': 'E'
+  + 'uno': 'A'
+"""
+    )
+
+
 def test_render_new_user():
     """New users are displayed as expected."""
 
@@ -19,7 +53,6 @@ def test_render_new_user():
         == """\
 New user: newuser
  fields:
-  + <none>
  note:
   + "I'm new."
 """
@@ -40,7 +73,6 @@ def test_render_changed_user():
         == """\
 Changed user: activeuser
  fields:
-  - <none>
   + 'likes': 'puppies, infosec'
  note:
   - <none>

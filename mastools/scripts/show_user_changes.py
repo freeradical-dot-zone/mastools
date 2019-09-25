@@ -47,15 +47,20 @@ def users_with_urls(session):
     }
 
 
-def render_fields(prefix, fields):
-    """Pretty-print a user's bio fields."""
+def render_field_changes(old_fields, new_fields):
+    """Pretty-print changes in a user's bio fields."""
 
-    if not fields:
-        yield f"  {prefix} <none>"
-        return
+    old_set = {(field["name"], field["value"]) for field in old_fields}
+    new_set = {(field["name"], field["value"]) for field in new_fields}
 
-    for field in sorted(fields, key=itemgetter("name")):
-        yield f"  {prefix} {field['name']!r}: {field['value']!r}"
+    for field in sorted(old_set - new_set):
+        yield f"  - {field[0]!r}: {field[1]!r}"
+
+    for field in sorted(old_set & new_set):
+        yield f"    {field[0]!r}: {field[1]!r}"
+
+    for field in sorted(new_set - old_set):
+        yield f"  + {field[0]!r}: {field[1]!r}"
 
 
 def render_note(prefix, note):
@@ -77,7 +82,7 @@ def render_new_user(username, data):
     yield f"New user: {username}"
 
     yield " fields:"
-    yield from render_fields("+", data["fields"])
+    yield from render_field_changes({}, data["fields"])
 
     yield " note:"
     yield from render_note("+", data["note"])
@@ -92,8 +97,7 @@ def render_changed_user(username, old_data, new_data):
     if old_data["fields"] == new_data["fields"]:
         yield "  <unchanged>"
     else:
-        yield from render_fields("-", old_data["fields"])
-        yield from render_fields("+", new_data["fields"])
+        yield from render_field_changes(old_data["fields"], new_data["fields"])
 
     yield " note:"
     if old_data["note"] == new_data["note"]:
@@ -109,7 +113,7 @@ def render_deleted_user(username, data):
     yield f"Deleted user: {username}"
 
     yield " fields:"
-    yield from render_fields("-", data["fields"])
+    yield from render_field_changes(data["fields"], {})
 
     yield " note:"
     yield from render_note("-", data["note"])
