@@ -2,4 +2,5 @@
 .venv/
 dist/
 mastools.egg-info/
+pip-wheel-metadata/
 *.pyc

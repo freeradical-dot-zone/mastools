@@ -19,7 +19,7 @@ CACHE_FILE = "~/.mastools/usercache.json"
 CONFIG_FILE = "~/.mastools/config.json"
 
 
-def has_url(account: Accounts) -> str:
+def has_url(account: Accounts) -> bool:
     """Return True if the account's note or fields seem to contain a URL."""
 
     if account.note and "http" in account.note.lower():
@@ -44,6 +44,35 @@ def users_with_urls(session):
         for account in query
         if has_url(account)
     }
+
+
+def render_new_user(username, data):
+    """Pretty-print information about a new user."""
+
+    print("New user:", username)
+    print("+ fields:", data["fields"])
+    print("+ note:", data["note"])
+    print()
+
+
+def render_changed_user(username, old_data, new_data):
+    """Pretty-print information about a changed user."""
+
+    print("Changed user:", username)
+    print("- fields:", old_data["fields"])
+    print("+ fields:", new_data["fields"])
+    print("- mote:", old_data["note"])
+    print("+ note:", new_data["note"])
+    print()
+
+
+def render_deleted_user(username, data):
+    """Pretty-print information about a deleted user."""
+
+    print("Deleted user:", username)
+    print("- fields:", data["fields"])
+    print("- note:", data["note"])
+    print()
 
 
 def handle_command_line():
@@ -73,30 +102,17 @@ def handle_command_line():
         except KeyError:
             # If the username isn't in the old data, then they're new. Report than and move on to
             # the next account.
-            print("New user:", username)
-            print("Fields:", new_data["fields"])
-            print("Note:", new_data["note"])
-            print("-" * 30)
+            render_new_user(username, new_data)
             continue
 
-        if old_data == new_data:
-            continue
-
-        # Something's changed since the last time we saw this user. Report that.
-        print("Changed user:", username)
-        print("Old Fields:", old_data["fields"])
-        print("Old Note:", old_data["note"])
-        print("New Fields:", new_data["fields"])
-        print("New Note:", new_data["note"])
-        print("-" * 30)
+        if old_data != new_data:
+            # Something's changed since the last time we saw this user. Report that.
+            render_changed_user(username, old_data, new_data)
 
     # Report any leftover old accounts that aren't in the new accounts. They were probably
     # suspended.
     for username, old_data in old_users.items():
-        print("Deleted user:", username)
-        print("Old Fields:", old_data["fields"])
-        print("Old Note:", old_data["note"])
-        print("-" * 30)
+        render_deleted_user(username, old_data)
 
     # Save these results for the next run. Include the version information and nest the user
     # information inside a "users" key from the start, because experience says if we don't do this
