@@ -16,7 +16,7 @@ def get_config():
 def cache_file(cache_key):
     """Return the Path of the cache file for the key."""
 
-    return MASTOOLS_DIR / f"{cache_key}cache.json"
+    return MASTOOLS_DIR / f"{cache_key}_cache.json"
 
 
 def load_cache(cache_key, version):

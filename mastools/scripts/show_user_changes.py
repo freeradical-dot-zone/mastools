@@ -15,7 +15,7 @@ from operator import itemgetter
 from mastools.models import session_for, Accounts
 from mastools.scripts import common
 
-CACHE_KEY = "user"
+CACHE_KEY = "users"
 CACHE_VERSION = 1
 
 
