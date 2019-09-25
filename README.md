@@ -4,9 +4,9 @@
 
 If you just want to use mastools and not work on the project itself: `pip install mastools`.
 
-If you have [poetry](https://poetry.eustace.io) installed, run `poetry install`.
+If you want to help develop mastools and have [poetry](https://poetry.eustace.io) installed, clone this repo and run `poetry install`.
 
-If not, use `pip` to install the dependencies mentioned in the `[tool.poetry.dependencies]` section of `pyproject.toml`.
+If you want to develop mastools but don't have poetry, use `pip` to install the dependencies mentioned in the `[tool.poetry.dependencies]` section of `pyproject.toml`.
 
 ## Configuration
 
@@ -42,7 +42,29 @@ For example I run this from a cron job on my instance like:
 10 * * * * /home/me/mastools/.venv/bin/show-user-changes
 ```
 
-to get an hourly update of changes.
+to get an hourly update of changes. This gives a report like:
+
+```
+Changed user: tek
+ fields:
+  - 'Avatar': 'Me, at night, with tunes'
+    'Website': 'https://honeypot.net'
+  + 'Avatar': 'Me, at night, with music'
+ note:
+  <unchanged>
+
+New user: new_spammer
+ fields:
+  + 'website': 'https://example.com/foo-corp-tech-support'
+ note:
+  + 'ALL UR FRAUD^WSUPPORT NEEDS'
+
+Deleted user: old_spammer
+ fields:
+  - 'website': 'https://example.com/bar-inc-tech-support'
+ note:
+  - 'SEND ME YOUR IP ADDRESS AND CREDIT CARD'
+```
 
 # License
 
@@ -50,6 +72,7 @@ Distributed under the terms of the `MIT`_ license, mastrools is free and open so
 
 # History
 
+- v0.1.3 - 2019-09-25: Productionizing
 - v0.1.2 - 2019-09-25: Prettier show-user-changes output
 - v0.1.1 - 2019-09-24: Same code, but pushing new metadata to pypi
 - v0.1.0 - 2019-09-24: First release
