@@ -11,6 +11,7 @@ spammers before they have a chance to post!
 
 import argparse
 import json
+from operator import itemgetter
 from pathlib import Path
 
 from mastools.models import session_for, Accounts
@@ -46,30 +47,60 @@ def users_with_urls(session):
     }
 
 
+def render_fields(prefix, fields):
+    """Pretty-print a user's bio fields."""
+
+    if not fields:
+        yield f"  {prefix} <none>"
+        return
+
+    for field in sorted(fields, key=itemgetter("name")):
+        yield f"  {prefix} {field['name']!r}: {field['value']!r}"
+
+
+def render_note(prefix, note):
+    """Pretty-print a user's bio note."""
+
+    if not note:
+        yield f"  {prefix} <none>"
+        return
+
+    # This protects from email header injection from crafty users. See
+    # https://www.thesitewizard.com/php/protect-script-from-email-injection.shtml for an
+    # explanation.
+    yield f"  {prefix} {note!r}"
+
+
 def render_new_user(username, data):
     """Pretty-print information about a new user."""
 
     yield f"New user: {username}"
-    yield f"+ fields: {data['fields']}"
-    yield f"+ note: {data['note']}"
+    yield " fields:"
+    yield from render_fields("+", data["fields"])
+    yield " note:"
+    yield from render_note("+", data["note"])
 
 
 def render_changed_user(username, old_data, new_data):
     """Pretty-print information about a changed user."""
 
     yield f"Changed user: {username}"
-    yield f"- fields: {old_data['fields']}"
-    yield f"+ fields: {new_data['fields']}"
-    yield f"- mote: {old_data['note']}"
-    yield f"+ note: {new_data['note']}"
+    yield " fields:"
+    yield from render_fields("-", old_data["fields"])
+    yield from render_fields("+", new_data["fields"])
+    yield " note:"
+    yield from render_note("-", old_data["note"])
+    yield from render_note("+", new_data["note"])
 
 
 def render_deleted_user(username, data):
     """Pretty-print information about a deleted user."""
 
     yield f"Deleted user: {username}"
-    yield f"- fields: {data['fields']}"
-    yield f"- note: {data['note']}"
+    yield " fields:"
+    yield from render_fields("-", data["fields"])
+    yield " note:"
+    yield from render_note("-", data["note"])
 
 
 def show_output(gen):

@@ -6,7 +6,7 @@ from mastools.scripts import show_user_changes
 def collect(gen):
     """Turn the output of a generator into a string we can compare."""
 
-    return "\n".join(list(gen))
+    return "\n".join(list(gen)) + "\n"
 
 
 def test_render_new_user():
@@ -18,8 +18,11 @@ def test_render_new_user():
         collect(out)
         == """\
 New user: newuser
-+ fields: []
-+ note: I'm new."""
+ fields:
+  + <none>
+ note:
+  + "I'm new."
+"""
     )
 
 
@@ -28,7 +31,7 @@ def test_render_changed_user():
 
     out = show_user_changes.render_changed_user(
         "activeuser",
-        {"fields": [], "note": "i just got here"},
+        {"fields": [], "note": None},
         {"fields": [{"name": "likes", "value": "puppies, infosec"}], "note": "hack the planet"},
     )
 
@@ -36,10 +39,13 @@ def test_render_changed_user():
         collect(out)
         == """\
 Changed user: activeuser
-- fields: []
-+ fields: [{'name': 'likes', 'value': 'puppies, infosec'}]
-- mote: i just got here
-+ note: hack the planet"""
+ fields:
+  - <none>
+  + 'likes': 'puppies, infosec'
+ note:
+  - <none>
+  + 'hack the planet'
+"""
     )
 
 
@@ -50,7 +56,7 @@ def test_render_deleted_user():
         "spammer",
         {
             "fields": [{"name": "support", "value": "https://example.com/send-me-cash"}],
-            "note": "Send me your money!",
+            "note": "I like to\n\n.\n\nFrom: spammer@example.com\nSubject: Inject spam",
         },
     )
 
@@ -58,6 +64,9 @@ def test_render_deleted_user():
         collect(out)
         == """\
 Deleted user: spammer
-- fields: [{'name': 'support', 'value': 'https://example.com/send-me-cash'}]
-- note: Send me your money!"""
+ fields:
+  - 'support': 'https://example.com/send-me-cash'
+ note:
+  - 'I like to\\n\\n.\\n\\nFrom: spammer@example.com\\nSubject: Inject spam'
+"""
     )
