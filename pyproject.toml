@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "Tools for interacting directly with a Mastodon instance's database"
 authors = ["Kirk Strauser <kirk@strauser.com>"]
 license = "MIT"
+homepage = "https://github.com/freeradical-dot-zone/mastools"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 psycopg2 = "^2.8"

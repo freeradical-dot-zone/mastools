@@ -2,6 +2,8 @@
 
 ## Installation
 
+If you just want to use mastools and not work on the project itself: `pip install mastools`.
+
 If you have [poetry](https://poetry.eustace.io) installed, run `poetry install`.
 
 If not, use `pip` to install the dependencies mentioned in the `[tool.poetry.dependencies]` section of `pyproject.toml`.
@@ -33,6 +35,14 @@ into every single field possible. Suppose you run this hourly and email yourself
 the results (which will usually be empty unless your instance is *very* busy).
 Now you can catch those "https://support-foo-corp/" spammers before they have a
 chance to post!
+
+For example I run this from a cron job on my instance like:
+
+```
+10 * * * * /home/me/mastools/.venv/bin/show-user-changes
+```
+
+to get an hourly update of changes.
 
 # License
 
