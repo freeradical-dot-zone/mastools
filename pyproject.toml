@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mastools"
-version = "0.1.0"
+version = "0.1.1"
 description = "Tools for interacting directly with a Mastodon instance's database"
 authors = ["Kirk Strauser <kirk@strauser.com>"]
 license = "MIT"
