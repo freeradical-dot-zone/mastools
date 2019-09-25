@@ -3,50 +3,50 @@
 from mastools.scripts import show_user_changes
 
 
-def test_render_new_user(capsys):
+def collect(gen):
+    """Turn the output of a generator into a string we can compare."""
+
+    return "\n".join(list(gen))
+
+
+def test_render_new_user():
     """New users are displayed as expected."""
 
-    show_user_changes.render_new_user("newuser", {"fields": [], "note": "I'm new."})
+    out = show_user_changes.render_new_user("newuser", {"fields": [], "note": "I'm new."})
 
-    captured = capsys.readouterr()
     assert (
-        captured.out
+        collect(out)
         == """\
 New user: newuser
 + fields: []
-+ note: I'm new.
-
-"""
++ note: I'm new."""
     )
 
 
-def test_render_changed_user(capsys):
+def test_render_changed_user():
     """Changed users are displayed as expected."""
 
-    show_user_changes.render_changed_user(
+    out = show_user_changes.render_changed_user(
         "activeuser",
         {"fields": [], "note": "i just got here"},
         {"fields": [{"name": "likes", "value": "puppies, infosec"}], "note": "hack the planet"},
     )
 
-    captured = capsys.readouterr()
     assert (
-        captured.out
+        collect(out)
         == """\
 Changed user: activeuser
 - fields: []
 + fields: [{'name': 'likes', 'value': 'puppies, infosec'}]
 - mote: i just got here
-+ note: hack the planet
-
-"""
++ note: hack the planet"""
     )
 
 
-def test_render_deleted_user(capsys):
+def test_render_deleted_user():
     """Deleted users are displayed as expected."""
 
-    show_user_changes.render_deleted_user(
+    out = show_user_changes.render_deleted_user(
         "spammer",
         {
             "fields": [{"name": "support", "value": "https://example.com/send-me-cash"}],
@@ -54,13 +54,10 @@ def test_render_deleted_user(capsys):
         },
     )
 
-    captured = capsys.readouterr()
     assert (
-        captured.out
+        collect(out)
         == """\
 Deleted user: spammer
 - fields: [{'name': 'support', 'value': 'https://example.com/send-me-cash'}]
-- note: Send me your money!
-
-"""
+- note: Send me your money!"""
     )

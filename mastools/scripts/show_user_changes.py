@@ -49,29 +49,40 @@ def users_with_urls(session):
 def render_new_user(username, data):
     """Pretty-print information about a new user."""
 
-    print("New user:", username)
-    print("+ fields:", data["fields"])
-    print("+ note:", data["note"])
-    print()
+    yield f"New user: {username}"
+    yield f"+ fields: {data['fields']}"
+    yield f"+ note: {data['note']}"
 
 
 def render_changed_user(username, old_data, new_data):
     """Pretty-print information about a changed user."""
 
-    print("Changed user:", username)
-    print("- fields:", old_data["fields"])
-    print("+ fields:", new_data["fields"])
-    print("- mote:", old_data["note"])
-    print("+ note:", new_data["note"])
-    print()
+    yield f"Changed user: {username}"
+    yield f"- fields: {old_data['fields']}"
+    yield f"+ fields: {new_data['fields']}"
+    yield f"- mote: {old_data['note']}"
+    yield f"+ note: {new_data['note']}"
 
 
 def render_deleted_user(username, data):
     """Pretty-print information about a deleted user."""
 
-    print("Deleted user:", username)
-    print("- fields:", data["fields"])
-    print("- note:", data["note"])
+    yield f"Deleted user: {username}"
+    yield f"- fields: {data['fields']}"
+    yield f"- note: {data['note']}"
+
+
+def show_output(gen):
+    """Print each line of output to stdout, then a blank line.
+
+    Building the output this way is a little unusual, but it's much easier to test. Also, adopting
+    this convention means that we don't have to build up the output inside each rendering function,
+    so they can be as simple as possible and not have to track their own state.
+    """
+
+    for line in gen:
+        print(line)
+
     print()
 
 
@@ -102,17 +113,17 @@ def handle_command_line():
         except KeyError:
             # If the username isn't in the old data, then they're new. Report than and move on to
             # the next account.
-            render_new_user(username, new_data)
+            show_output(render_new_user(username, new_data))
             continue
 
         if old_data != new_data:
             # Something's changed since the last time we saw this user. Report that.
-            render_changed_user(username, old_data, new_data)
+            show_output(render_changed_user(username, old_data, new_data))
 
     # Report any leftover old accounts that aren't in the new accounts. They were probably
     # suspended.
     for username, old_data in old_users.items():
-        render_deleted_user(username, old_data)
+        show_output(render_deleted_user(username, old_data))
 
     # Save these results for the next run. Include the version information and nest the user
     # information inside a "users" key from the start, because experience says if we don't do this
