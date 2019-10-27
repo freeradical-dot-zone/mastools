@@ -148,7 +148,7 @@ def setup_command_line(subgroup, parent):
     """Add the subcommand."""
 
     this = subgroup.add_parser(
-        "show_user_changes", help=show_user_changes.__doc__, parents=[parent]
+        "show-user-changes", help=show_user_changes.__doc__, parents=[parent]
     )
     this.set_defaults(func=show_user_changes)
 

@@ -12,7 +12,7 @@ def setup_command_line(subgroup, parent):
     """Add the subcommand."""
 
     this = subgroup.add_parser(
-        "show_unconfirmed_users", help=show_unconfirmed_users.__doc__, parents=[parent]
+        "show-unconfirmed-users", help=show_unconfirmed_users.__doc__, parents=[parent]
     )
     this.set_defaults(func=show_unconfirmed_users)
 
@@ -31,6 +31,6 @@ def show_unconfirmed_users(args):  # pylint: disable=unused-argument
     )
 
     for user in query:
-        print(f"{user.account.username} <{user.email}>")
+        print(f"{user.account.username} <{user.email}> was created at {user.created_at}")
 
     LOG.info("found %d unconfirmed accounts", query.count())

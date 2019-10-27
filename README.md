@@ -23,7 +23,26 @@ Make a file named `~/.mastools/config.json` like:
 
 All mastools components will use this database configuration.
 
-# The tools
+# The tool
+
+Starting with version 0.2.0, there's only one main `mastools` command which has
+multiple subcommands. `show-user-changes` is still a functioning command for
+temporary backward compatibility, but it will be removed soon.
+
+`mastools` subcommands:
+
+## show-unconfirmed-users
+
+Show users who haven't confirmed their email yet, ordered by their creation date
+from oldest to newest.
+
+This is useful for detection a flood of newly created junk accounts.
+
+```
+$ mastools show-unconfired-users
+crqcrujofa <cfvzm@example.com> was created at 2019-10-25 10:10:18.406158
+lkjmadf <ljchrew@example.com> was created at 2019-10-25 13:06:04.175580
+```
 
 ## show-user-changes
 
@@ -39,7 +58,7 @@ chance to post!
 For example I run this from a cron job on my instance like:
 
 ```
-10 * * * * /home/me/mastools/.venv/bin/show-user-changes
+10 * * * * /home/me/mastools/.venv/bin/mastools show-user-changes
 ```
 
 to get an hourly update of changes. This gives a report like:
@@ -72,6 +91,7 @@ Distributed under the terms of the MIT license, mastools is free and open source
 
 # History
 
+- v0.2.0 - 2019-10-27: Added `mastools` command and `show_unconfirmed_users` subcommand
 - v0.1.3 - 2019-09-25: Productionizing
 - v0.1.2 - 2019-09-25: Prettier show-user-changes output
 - v0.1.1 - 2019-09-24: Same code, but pushing new metadata to pypi
