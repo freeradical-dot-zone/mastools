@@ -17,7 +17,7 @@ def setup_command_line(subgroup, parent):
     this.set_defaults(func=show_unconfirmed_users)
 
 
-def show_unconfirmed_users(args):  # pylint-disable: unused-argument
+def show_unconfirmed_users(args):  # pylint: disable=unused-argument
     """Show users who haven't confirmed their email yet."""
 
     session = session_for(**common.get_config())

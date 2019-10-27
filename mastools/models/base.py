@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+Base = declarative_base()  # pylint: disable=invalid-name  ; This is an SQLAlchemy convention
 
 
 @lru_cache()
@@ -20,6 +20,6 @@ def session_for(*, host, database, user, password, port=5432):
         return connect(host=host, database=database, user=user, password=password, port=port)
 
     engine = create_engine(f"postgresql+psycopg2://", creator=pg_connect)
-    Session = sessionmaker(bind=engine)
-    session = Session()
+    factory = sessionmaker(bind=engine)
+    session = factory()
     return session

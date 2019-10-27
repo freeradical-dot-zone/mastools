@@ -9,6 +9,8 @@ from .base import Base
 class Users(Base):
     """The Users table."""
 
+    # pylint: disable=too-few-public-methods  ; We know.
+
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     email = Column(String, nullable=False)
@@ -18,6 +20,8 @@ class Users(Base):
 
     account = relationship("Accounts")
 
+
+# pylint: disable=line-too-long  ; copied-and-pasted from PostgreSQL
 
 # Note: columns are added as-needed. If we get overly ambitious and add everything at once, this is
 # more likely to drift out of date with the upstream Mastodon table definitions.

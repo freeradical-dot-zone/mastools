@@ -8,6 +8,8 @@ from .base import Base
 class Accounts(Base):
     """The Accounts table."""
 
+    # pylint: disable=too-few-public-methods  ; We know.
+
     __tablename__ = "accounts"
     id = Column(Integer, primary_key=True)
     username = Column(String, nullable=False)
@@ -17,6 +19,8 @@ class Accounts(Base):
     fields = Column(JSON)
     suspended_at = Column(DateTime)
 
+
+# pylint: disable=line-too-long  ; copied-and-pasted from PostgreSQL
 
 # Note: columns are added as-needed. If we get overly ambitious and add everything at once, this is
 # more likely to drift out of date with the upstream Mastodon table definitions.

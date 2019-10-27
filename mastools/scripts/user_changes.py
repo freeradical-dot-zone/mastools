@@ -161,7 +161,7 @@ def handle_command_line():
     show_user_changes(args)
 
 
-def show_user_changes(args):  # pylint-disable: unused-argument
+def show_user_changes(args):  # pylint: disable=unused-argument
     """Fetch all current users with URLs in their account info and show any changes."""
 
     session = session_for(**common.get_config())
