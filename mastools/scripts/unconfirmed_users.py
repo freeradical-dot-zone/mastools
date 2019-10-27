@@ -1,20 +1,28 @@
 """Show users who haven't confirmed their email yet."""
 
+import logging
+
 from mastools.models import session_for, Users
 from mastools.scripts import common
 
+LOG = logging.getLogger(__name__)
 
-def setup_command_line(children):
+
+def setup_command_line(subgroup, parent):
     """Add the subcommand."""
 
-    this = children.add_parser("show_unconfirmed_users", help=show_unconfirmed_users.__doc__)
+    this = subgroup.add_parser(
+        "show_unconfirmed_users", help=show_unconfirmed_users.__doc__, parents=[parent]
+    )
     this.set_defaults(func=show_unconfirmed_users)
 
 
-def show_unconfirmed_users(args):
+def show_unconfirmed_users(args):  # pylint-disable: unused-argument
     """Show users who haven't confirmed their email yet."""
 
     session = session_for(**common.get_config())
+
+    LOG.debug("fetching unconfirmed accounts")
 
     query = (
         session.query(Users)
@@ -24,3 +32,5 @@ def show_unconfirmed_users(args):
 
     for user in query:
         print(f"{user.account.username} <{user.email}>")
+
+    LOG.info("found %d unconfirmed accounts", query.count())

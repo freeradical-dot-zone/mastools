@@ -144,10 +144,12 @@ def show_output(gen):
     print()
 
 
-def setup_command_line(children):
+def setup_command_line(subgroup, parent):
     """Add the subcommand."""
 
-    this = children.add_parser("show_user_changes", help=show_user_changes.__doc__)
+    this = subgroup.add_parser(
+        "show_user_changes", help=show_user_changes.__doc__, parents=[parent]
+    )
     this.set_defaults(func=show_user_changes)
 
 
@@ -159,7 +161,7 @@ def handle_command_line():
     show_user_changes(args)
 
 
-def show_user_changes(args):
+def show_user_changes(args):  # pylint-disable: unused-argument
     """Fetch all current users with URLs in their account info and show any changes."""
 
     session = session_for(**common.get_config())
