@@ -10,12 +10,13 @@ class Accounts(Base):
 
     __tablename__ = "accounts"
     id = Column(Integer, primary_key=True)
-    username = Column(String)
+    username = Column(String, nullable=False)
     domain = Column(String)
-    created_at = Column(DateTime)
-    note = Column(Text)
+    created_at = Column(DateTime, nullable=False)
+    note = Column(Text, nullable=False)
     fields = Column(JSON)
     suspended_at = Column(DateTime)
+
 
 # Note: columns are added as-needed. If we get overly ambitious and add everything at once, this is
 # more likely to drift out of date with the upstream Mastodon table definitions.

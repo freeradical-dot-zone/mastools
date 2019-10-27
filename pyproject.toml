@@ -20,6 +20,7 @@ pylint = "^2.4"
 sqlalchemy-stubs = "^0.2.0"
 
 [tool.poetry.scripts]
+mastools = "mastools.scripts.cmd_mastools:handle_command_line"
 show-user-changes = "mastools.scripts.show_user_changes:handle_command_line"
 
 [build-system]
