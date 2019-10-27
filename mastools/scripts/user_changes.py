@@ -144,11 +144,23 @@ def show_output(gen):
     print()
 
 
-def handle_command_line():
-    """Fetch all changed current users with URLs in their account info and show any changes."""
+def setup_command_line(children):
+    """Add the subcommand."""
 
-    parser = argparse.ArgumentParser(description=handle_command_line.__doc__)
-    parser.parse_args()
+    this = children.add_parser("show_user_changes", help=show_user_changes.__doc__)
+    this.set_defaults(func=show_user_changes)
+
+
+def handle_command_line():
+    """Backward-compatible command line setup."""
+
+    parser = argparse.ArgumentParser(description=show_user_changes.__doc__)
+    args = parser.parse_args()
+    show_user_changes(args)
+
+
+def show_user_changes(args):
+    """Fetch all current users with URLs in their account info and show any changes."""
 
     session = session_for(**common.get_config())
 

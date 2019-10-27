@@ -2,7 +2,7 @@
 
 import argparse
 
-from . import unconfirmed_users
+from . import unconfirmed_users, user_changes
 
 
 def handle_command_line():
@@ -14,7 +14,8 @@ def handle_command_line():
         title="Subcommands", description="Valid subcommands", help="Subcommand details"
     )
 
-    unconfirmed_users.setup_command_line(children)
+    for child_module in (unconfirmed_users, user_changes):
+        child_module.setup_command_line(children)
 
     args = parser.parse_args()
     try:
