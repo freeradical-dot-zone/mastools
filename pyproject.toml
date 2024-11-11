@@ -9,15 +9,15 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 psycopg2 = "^2.8"
-python = "^3.6"
+python = "^3.10"
 sqlalchemy = "^1.3"
 
 [tool.poetry.dev-dependencies]
-black = {version = "=19.3b0", allows-prereleases = true}
-flake8 = "^3.7"
-mypy = "^0.720.0"
-pylint = "^2.4"
-sqlalchemy-stubs = "^0.2.0"
+black = "*"
+flake8 = "*"
+mypy = "*"
+pylint = "*"
+sqlalchemy-stubs = "*"
 
 [tool.poetry.scripts]
 mastools = "mastools.scripts.cmd_mastools:handle_command_line"
