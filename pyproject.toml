@@ -6,11 +6,16 @@ authors = [{ name = "Kirk Strauser", email = "kirk@strauser.com" }]
 license = "MIT"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = ["psycopg2>=2.9.11", "sqlalchemy>=2.0.44"]
+dependencies = [
+  "psycopg2>=2.9.11",
+  "ruamel-yaml>=0.18.16",
+  "sqlalchemy>=2.0.44",
+]
 
 [project.scripts]
 mastools = "mastools.scripts.cmd_mastools:handle_command_line"
 show-user-changes = "mastools.scripts.user_changes:handle_command_line"
+fix-locale = "mastools.scripts.fix_locale:handle_command_line"
 
 [project.urls]
 Homepage = "https://github.com/freeradical-dot-zone/mastools"
