@@ -1,6 +1,6 @@
-"""Test the show_user_changes script."""
+"""Test the user_changes script."""
 
-from mastools.scripts import show_user_changes
+from mastools.scripts import user_changes
 
 
 def collect(gen):
@@ -30,7 +30,7 @@ def test_render_field_changes():
     )
 
     assert (
-        collect(show_user_changes.render_field_changes(old_fields, new_fields))
+        collect(user_changes.render_field_changes(old_fields, new_fields))
         == """\
   - 'one': 'A'
   - 'two': 'C'
@@ -46,7 +46,7 @@ def test_render_field_changes():
 def test_render_field_changes_empty():
     """'Changes to empty fields should say *something*."""
 
-    assert collect(show_user_changes.render_field_changes({}, {})) == "  <none>\n"
+    assert collect(user_changes.render_field_changes({}, {})) == "  <none>\n"
 
 
 def test_render_field_changes_same():
@@ -54,7 +54,7 @@ def test_render_field_changes_same():
 
     assert (
         collect(
-            show_user_changes.render_field_changes(
+            user_changes.render_field_changes(
                 make_fields([("foo", "bar"), ("spam", "eggs")]),
                 make_fields([("foo", "bar"), ("spam", "eggs")]),
             )
@@ -67,7 +67,7 @@ def test_render_note_changes():
     """Changing a note's contents shows the old and new items."""
 
     assert (
-        collect(show_user_changes.render_note_changes("old", "new"))
+        collect(user_changes.render_note_changes("old", "new"))
         == """\
   - 'old'
   + 'new'
@@ -79,7 +79,7 @@ def test_render_note_changes_became_empty():
     """Deleting an existing note shows only the old value."""
 
     assert (
-        collect(show_user_changes.render_note_changes("old", ""))
+        collect(user_changes.render_note_changes("old", ""))
         == """\
   - 'old'
 """
@@ -90,7 +90,7 @@ def test_render_note_changes_became_full():
     """Adding a new note shows only the new value."""
 
     assert (
-        collect(show_user_changes.render_note_changes("", "new"))
+        collect(user_changes.render_note_changes("", "new"))
         == """\
   + 'new'
 """
@@ -100,19 +100,19 @@ def test_render_note_changes_became_full():
 def test_render_note_changes_empty():
     """Showing empty note changes highlights that there's nothing there."""
 
-    assert collect(show_user_changes.render_note_changes("", "")) == "  <none>\n"
+    assert collect(user_changes.render_note_changes("", "")) == "  <none>\n"
 
 
 def test_render_note_changes_same():
     """Showing existing notes that don't change highlights that they haven't changed."""
 
-    assert collect(show_user_changes.render_note_changes("Note.", "Note.")) == "  <unchanged>\n"
+    assert collect(user_changes.render_note_changes("Note.", "Note.")) == "  <unchanged>\n"
 
 
 def test_render_new_user():
     """New users are displayed as expected."""
 
-    out = show_user_changes.render_new_user("newuser", {"fields": [], "note": "I'm new."})
+    out = user_changes.render_new_user("newuser", {"fields": [], "note": "I'm new."})
 
     assert (
         collect(out)
@@ -129,7 +129,7 @@ New user: newuser
 def test_render_changed_user():
     """Changed users are displayed as expected."""
 
-    out = show_user_changes.render_changed_user(
+    out = user_changes.render_changed_user(
         "activeuser",
         {"fields": [], "note": None},
         {"fields": [{"name": "likes", "value": "puppies, infosec"}], "note": "hack the planet"},
@@ -150,7 +150,7 @@ Changed user: activeuser
 def test_render_changed_user_but_not_really():
     """Maaaaybe-changed users are displayed as expected."""
 
-    out = show_user_changes.render_changed_user(
+    out = user_changes.render_changed_user(
         "activeuser",
         {"fields": [{"name": "likes", "value": "puppies, infosec"}], "note": "hack the planet"},
         {"fields": [{"name": "likes", "value": "puppies, infosec"}], "note": "hack the planet"},
@@ -174,7 +174,7 @@ Changed user: activeuser
 def test_render_deleted_user():
     """Deleted users are displayed as expected."""
 
-    out = show_user_changes.render_deleted_user(
+    out = user_changes.render_deleted_user(
         "spammer",
         {
             "fields": [{"name": "support", "value": "https://example.com/send-me-cash"}],
