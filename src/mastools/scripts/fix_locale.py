@@ -1,5 +1,5 @@
-# /// script
 #!/usr/bin/env python
+# /// script
 # requires-python = ">=3.13"
 # dependencies = [
 #     "ruamel-yaml",
